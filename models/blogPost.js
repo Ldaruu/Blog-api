@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const blogPostSchema = mongoose.Schema({
 	_id: {
-		type: mongoose.Schema.Types._ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
 		required: true,
 	},
 	title: {
