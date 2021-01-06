@@ -14,7 +14,10 @@ router.post('/', (req, res, next) => {
 });
 
 router.get('/:postId', (req, res, next) => {
-	const id = rew.param.postId;
+	const id = req.params.postId;
+	res.json({
+		id,
+	});
 });
 
 router.patch('/:postId', (req, res, next) => {
