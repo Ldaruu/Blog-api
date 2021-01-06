@@ -1,10 +1,31 @@
 const express = require('express');
+const app = express();
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 require('dotenv/config');
+
 const blogpostRouter = require('./routes/blogposts');
 
-const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
+app.use((req, req, next) => {
+	res.header('Access-Control-Allow-Origin', process.env.ORIGIN);
+	res.header(
+		'Access-Control-Allow-Headers',
+		'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+	);
+	if (req.method === 'OPTIONS') {
+		res.header(
+			'Access-Control-Allow-Methods',
+			' GET, POST, PUT, PATCH, DELETE'
+		);
+		return res.status(200).json({});
+	}
+	next();
+});
+
+//ROUTERS
 app.use('/posts', blogpostRouter);
 
 app.get('/', (req, res) => {
