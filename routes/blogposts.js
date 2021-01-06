@@ -1,18 +1,32 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+require('dotenv/config');
 
 const BlogPost = require('../models/blogPost');
 
 router.get('/', (req, res, next) => {
 	BlogPost.find()
+		.select('_id title content')
 		.exec()
-		.then((docs) => {
-			console.log(docs);
-			res.status(200).json(docs);
+		.then((data) => {
+			const response = {
+				count: data.length,
+				posts: data.map((d) => {
+					return {
+						id: d._id,
+						title: d.title,
+						content: d.content,
+						request: {
+							type: 'GET',
+							url: process.env.API_URL + '/posts/' + d._id,
+						},
+					};
+				}),
+			};
+			res.status(200).json(response);
 		})
 		.catch((err) => {
-			// console.log(err);
 			res.status(500).json({ error: err });
 		});
 });
@@ -26,14 +40,20 @@ router.post('/', (req, res, next) => {
 	blogPost
 		.save()
 		.then((result) => {
-			console.log(result);
 			res.status(201).json({
-				message: 'Post was created',
-				post: blogPost,
+				message: 'Post was created!',
+				post: {
+					id: result._id,
+					title: result.title,
+					content: result.content,
+					request: {
+						type: 'GET',
+						url: process.env.API_URL + '/posts/' + result._id,
+					},
+				},
 			});
 		})
 		.catch((err) => {
-			console.log(err);
 			res.status(500).json({
 				error: err,
 			});
@@ -43,17 +63,16 @@ router.post('/', (req, res, next) => {
 router.get('/:postId', (req, res, next) => {
 	const id = req.params.postId;
 	BlogPost.findById(id)
+		.select('_id title content')
 		.exec()
-		.then((doc) => {
-			console.log('From DB: ', doc);
-			if (doc) {
-				res.status(200).json(doc);
+		.then((data) => {
+			if (data) {
+				res.status(200).json(data);
 			} else {
 				res.status(404).json({ message: 'Post does not exist!' });
 			}
 		})
 		.catch((err) => {
-			console.log(err);
 			res.status(500).json({ error: err });
 		});
 });
@@ -67,24 +86,27 @@ router.patch('/:postId', (req, res, next) => {
 	BlogPost.updateOne({ _id: id }, { $set: updateOps })
 		.exec()
 		.then((result) => {
-			console.log(result);
-			res.status(200).json(result);
+			res.status(200).json({
+				message: 'Post was updated!',
+				request: {
+					type: 'GET',
+					url: process.env.API_URL + '/posts/' + id,
+				},
+			});
 		})
 		.catch((err) => {
-			console.log(err);
 			res.status(500).json(err);
 		});
 });
 
 router.delete('/:postId', (req, res, next) => {
 	const id = req.params.postId;
-	BlogPost.remove({ _id: id })
+	BlogPost.deleteOne({ _id: id })
 		.exec()
 		.then((result) => {
-			res.status(200).json(result);
+			res.status(200).json({ message: 'Post deleted!' });
 		})
 		.catch((err) => {
-			console.log(err);
 			res.status(500).json({ error: err });
 		});
 });
