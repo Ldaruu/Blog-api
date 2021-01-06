@@ -59,7 +59,6 @@ router.get('/', (req, res, next) => {
 });
 
 router.post('/', upload.single('postImage'), (req, res, next) => {
-	console.log(req.file);
 	const blogPost = new BlogPost({
 		_id: new mongoose.Types.ObjectId(),
 		title: req.body.title,
