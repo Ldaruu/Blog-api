@@ -1,13 +1,39 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const multer = require('multer');
 require('dotenv/config');
+
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, './uploads/');
+	},
+	filename: function (req, file, cb) {
+		cb(null, new Date().toISOString() + file.originalname);
+	},
+});
+
+const fileFilter = (req, file, cb) => {
+	if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png ') {
+		cb(null, true);
+	} else {
+		cb(null, false);
+	}
+};
+
+const upload = multer({
+	storage: storage,
+	limits: {
+		fileSize: 1024 * 1024 * 5,
+	},
+	fileFilter: fileFilter,
+});
 
 const BlogPost = require('../models/blogPost');
 
 router.get('/', (req, res, next) => {
 	BlogPost.find()
-		.select('_id title content')
+		.select('_id title content postImage')
 		.exec()
 		.then((data) => {
 			const response = {
@@ -17,6 +43,7 @@ router.get('/', (req, res, next) => {
 						id: d._id,
 						title: d.title,
 						content: d.content,
+						postImage: d.postImage,
 						request: {
 							type: 'GET',
 							url: process.env.API_URL + '/posts/' + d._id,
@@ -31,11 +58,13 @@ router.get('/', (req, res, next) => {
 		});
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', upload.single('postImage'), (req, res, next) => {
+	console.log(req.file);
 	const blogPost = new BlogPost({
 		_id: new mongoose.Types.ObjectId(),
 		title: req.body.title,
 		content: req.body.content,
+		postImage: req.file.path,
 	});
 	blogPost
 		.save()
@@ -63,7 +92,7 @@ router.post('/', (req, res, next) => {
 router.get('/:postId', (req, res, next) => {
 	const id = req.params.postId;
 	BlogPost.findById(id)
-		.select('_id title content')
+		.select('_id title content postImage')
 		.exec()
 		.then((data) => {
 			if (data) {

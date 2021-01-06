@@ -18,6 +18,7 @@ try {
 	console.log('Could not connect to DB ERROR: ', error.message);
 }
 
+app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
