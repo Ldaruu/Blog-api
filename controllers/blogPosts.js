@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 
 exports.blogPosts_get_all = (req, res, next) => {
 	BlogPost.find()
-		.select('_id title content postImage')
+		.sort({ date: 'desc' })
+		.select('_id title content postImage, slug')
 		.exec()
 		.then((data) => {
 			const response = {
@@ -11,6 +12,7 @@ exports.blogPosts_get_all = (req, res, next) => {
 				posts: data.map((d) => {
 					return {
 						id: d._id,
+						slug: d.slug,
 						title: d.title,
 						content: d.content,
 						postImage: d.postImage,
@@ -42,6 +44,7 @@ exports.blogPost_create = (req, res, next) => {
 				message: 'Post was created!',
 				post: {
 					id: result._id,
+					slug: result.slug,
 					title: result.title,
 					content: result.content,
 					request: {
@@ -59,9 +62,9 @@ exports.blogPost_create = (req, res, next) => {
 };
 
 exports.blogPosts_get_post = (req, res, next) => {
-	const id = req.params.postId;
-	BlogPost.findById(id)
-		.select('_id title content postImage')
+	const slug = req.params.slug;
+	BlogPost.find({ slug: slug })
+		.select('_id title content postImage slug')
 		.exec()
 		.then((data) => {
 			if (data) {
@@ -81,14 +84,15 @@ exports.blogPosts_update_post = (req, res, next) => {
 	for (const ops of req.body) {
 		updateOps[ops.propName] = ops.value;
 	}
-	BlogPost.updateOne({ _id: id }, { $set: updateOps })
+	BlogPost.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true })
 		.exec()
 		.then((result) => {
+			console.log('RES: ', result);
 			res.status(200).json({
 				message: 'Post was updated!',
 				request: {
 					type: 'GET',
-					url: process.env.API_URL + '/posts/' + id,
+					url: process.env.API_URL + '/posts/' + result.slug,
 				},
 			});
 		})

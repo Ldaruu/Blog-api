@@ -2,15 +2,19 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-require('dotenv/config');
-
 const blogpostRouter = require('./routes/blogposts');
 const usersRouter = require('./routes/users');
+require('dotenv/config');
 
 try {
 	mongoose.connect(
 		process.env.DB_SERVER,
-		{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
+		{
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+			useCreateIndex: true,
+			useFindAndModify: false,
+		},
 		() => {
 			console.log('Connected to the DB');
 		}
@@ -42,10 +46,6 @@ app.use((req, res, next) => {
 //ROUTERS
 app.use('/posts', blogpostRouter);
 app.use('/user', usersRouter);
-
-app.get('/', (req, res) => {
-	res.send('Helloo there!');
-});
 
 app.use((req, res, next) => {
 	const error = new Error('Not found');

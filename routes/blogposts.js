@@ -15,7 +15,7 @@ router.post(
 	BlogPostsController.blogPost_create
 );
 
-router.get('/:postId', BlogPostsController.blogPosts_get_post);
+router.get('/:slug', BlogPostsController.blogPosts_get_post);
 
 router.patch('/:postId', withAuth, BlogPostsController.blogPosts_update_post);
 

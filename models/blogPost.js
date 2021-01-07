@@ -1,25 +1,33 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+slug = require('mongoose-slug-updater');
+mongoose.plugin(slug);
+(Schema = mongoose.Schema),
+	(blogPostSchema = mongoose.Schema({
+		_id: {
+			type: mongoose.Schema.Types.ObjectId,
+			required: true,
+		},
+		title: {
+			type: String,
+			required: true,
+			unique: true,
+		},
+		content: {
+			type: String,
+			required: true,
+		},
+		postImage: {
+			type: String,
+		},
+		date: {
+			type: Date,
+			default: Date.now,
+		},
+		slug: {
+			type: String,
+			slug: 'title',
+			unique: true,
+		},
+	}));
 
-const blogPostSchema = mongoose.Schema({
-	_id: {
-		type: mongoose.Schema.Types.ObjectId,
-		required: true,
-	},
-	title: {
-		type: String,
-		required: true,
-	},
-	content: {
-		type: String,
-		required: true,
-	},
-	postImage: {
-		type: String,
-	},
-	date: {
-		type: Date,
-		default: Date.now,
-	},
-})
-
-module.exports = mongoose.model('BlogPost', blogPostSchema)
+module.exports = mongoose.model('BlogPost', blogPostSchema);
