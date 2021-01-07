@@ -47,9 +47,10 @@ exports.blogPost_create = (req, res, next) => {
 					slug: result.slug,
 					title: result.title,
 					content: result.content,
+					imageUrl: result.postImage,
 					request: {
 						type: 'GET',
-						url: process.env.API_URL + '/posts/' + result._id,
+						url: process.env.API_URL + '/posts/' + result.slug,
 					},
 				},
 			});
@@ -87,7 +88,6 @@ exports.blogPosts_update_post = (req, res, next) => {
 	BlogPost.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true })
 		.exec()
 		.then((result) => {
-			console.log('RES: ', result);
 			res.status(200).json({
 				message: 'Post was updated!',
 				request: {
