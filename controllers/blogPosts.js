@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 exports.blogPosts_get_all = (req, res, next) => {
 	BlogPost.find()
 		.sort({ date: 'desc' })
-		.select('_id title content postImage, slug')
+		.select('_id title content postImage slug')
 		.exec()
 		.then((data) => {
 			const response = {
@@ -81,10 +81,14 @@ exports.blogPosts_get_post = (req, res, next) => {
 
 exports.blogPosts_update_post = (req, res, next) => {
 	const id = req.params.postId;
-	const updateOps = {};
-	for (const ops of req.body) {
-		updateOps[ops.propName] = ops.value;
-	}
+	const updateOps = {
+		title: req.body.title,
+		content: req.body.content,
+		postImage: req.file.path,
+	};
+	// for (const ops of req.body) {
+	// 	updateOps[ops.propName] = ops.value;
+	// }
 	BlogPost.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true })
 		.exec()
 		.then((result) => {
