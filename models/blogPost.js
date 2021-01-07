@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const blogPostSchema = mongoose.Schema({
 	_id: {
@@ -20,6 +20,6 @@ const blogPostSchema = mongoose.Schema({
 		type: Date,
 		default: Date.now,
 	},
-});
+})
 
-module.exports = mongoose.model('BlogPost', blogPostSchema);
+module.exports = mongoose.model('BlogPost', blogPostSchema)

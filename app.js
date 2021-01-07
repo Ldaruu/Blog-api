@@ -10,7 +10,7 @@ const usersRouter = require('./routes/users');
 try {
 	mongoose.connect(
 		process.env.DB_SERVER,
-		{ useNewUrlParser: true, useUnifiedTopology: true },
+		{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
 		() => {
 			console.log('Connected to the DB');
 		}
