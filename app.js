@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 require('dotenv/config');
 
 const blogpostRouter = require('./routes/blogposts');
+const usersRouter = require('./routes/users');
 
 try {
 	mongoose.connect(
@@ -40,6 +41,7 @@ app.use((req, res, next) => {
 
 //ROUTERS
 app.use('/posts', blogpostRouter);
+app.use('/user', usersRouter);
 
 app.get('/', (req, res) => {
 	res.send('Helloo there!');
