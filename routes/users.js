@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 require('dotenv/config');
 
 const User = require('../models/user');
@@ -41,6 +42,40 @@ router.post('/signup', (req, res, next) => {
 					}
 				});
 			}
+		});
+});
+
+router.post('/login', (req, res, next) => {
+	User.findOne({ email: req.body.email })
+		.exec()
+		.then((user) => {
+			if (user.length < 1) {
+				return res.status(401).json({ error: 'Not Authenticated' });
+			}
+			bcrypt.compare(req.body.password, user.password, (err, result) => {
+				if (err) {
+					return res.status(401).json({ error: 'Not Authenticated' });
+				}
+				if (result) {
+					const token = jwt.sign(
+						{
+							userId: user._id,
+							email: user.email,
+							userName: user.userName,
+						},
+						process.env.SECRET_KEY,
+						{ expiresIn: '1h' }
+					);
+					return res.status(200).json({
+						message: 'Authenticated User',
+						token: token,
+					});
+				}
+			});
+		})
+		.catch((err) => {
+			console.log(err);
+			res.status(500).json({ error: err });
 		});
 });
 

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const multer = require('multer');
+const withAuth = require('../middleware/withAuth');
 require('dotenv/config');
 
 const storage = multer.diskStorage({
@@ -58,7 +59,7 @@ router.get('/', (req, res, next) => {
 		});
 });
 
-router.post('/', upload.single('postImage'), (req, res, next) => {
+router.post('/', withAuth, upload.single('postImage'), (req, res, next) => {
 	const blogPost = new BlogPost({
 		_id: new mongoose.Types.ObjectId(),
 		title: req.body.title,
@@ -105,7 +106,7 @@ router.get('/:postId', (req, res, next) => {
 		});
 });
 
-router.patch('/:postId', (req, res, next) => {
+router.patch('/:postId', withAuth, (req, res, next) => {
 	const id = req.params.postId;
 	const updateOps = {};
 	for (const ops of req.body) {
@@ -127,7 +128,7 @@ router.patch('/:postId', (req, res, next) => {
 		});
 });
 
-router.delete('/:postId', (req, res, next) => {
+router.delete('/:postId', withAuth, (req, res, next) => {
 	const id = req.params.postId;
 	BlogPost.deleteOne({ _id: id })
 		.exec()
