@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const blogpostRouter = require('./routes/blogposts');
 const usersRouter = require('./routes/users');
+const cors = require('cors');
 require('dotenv/config');
 
 try {
@@ -23,25 +24,10 @@ try {
 	console.log('Could not connect to DB ERROR: ', error.message);
 }
 
+app.use(cors({ origin: process.env.ORIGIN }));
 app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-app.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', process.env.ORIGIN);
-	res.header(
-		'Access-Control-Allow-Headers',
-		'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-	);
-	if (req.method === 'OPTIONS') {
-		res.header(
-			'Access-Control-Allow-Methods',
-			' GET, POST, PUT, PATCH, DELETE'
-		);
-		return res.status(200).json({});
-	}
-	next();
-});
 
 //ROUTERS
 app.use('/posts', blogpostRouter);

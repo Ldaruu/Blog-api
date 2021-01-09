@@ -47,7 +47,7 @@ exports.blogPost_create = (req, res, next) => {
 					slug: result.slug,
 					title: result.title,
 					content: result.content,
-					imageUrl: result.postImage,
+					postImage: result.postImage,
 					request: {
 						type: 'GET',
 						url: process.env.API_URL + '/posts/' + result.slug,
@@ -69,7 +69,7 @@ exports.blogPosts_get_post = (req, res, next) => {
 		.exec()
 		.then((data) => {
 			if (data) {
-				res.status(200).json(data);
+				res.status(200).json(data[0]);
 			} else {
 				res.status(404).json({ message: 'Post does not exist!' });
 			}
@@ -81,22 +81,28 @@ exports.blogPosts_get_post = (req, res, next) => {
 
 exports.blogPosts_update_post = (req, res, next) => {
 	const id = req.params.postId;
+	console.log('B: ', req.body.postImage);
+	let image = req.file ? req.file.path : req.body.postImage;
 	const updateOps = {
 		title: req.body.title,
 		content: req.body.content,
-		postImage: req.file.path,
+		postImage: image,
 	};
 	// for (const ops of req.body) {
 	// 	updateOps[ops.propName] = ops.value;
 	// }
 	BlogPost.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true })
+		.select('_id title content postImage slug')
 		.exec()
 		.then((result) => {
 			res.status(200).json({
 				message: 'Post was updated!',
-				request: {
-					type: 'GET',
-					url: process.env.API_URL + '/posts/' + result.slug,
+				post: {
+					id: result._id,
+					slug: result.slug,
+					title: result.title,
+					content: result.content,
+					postImage: result.postImage,
 				},
 			});
 		})
