@@ -81,7 +81,6 @@ exports.blogPosts_get_post = (req, res, next) => {
 
 exports.blogPosts_update_post = (req, res, next) => {
 	const id = req.params.postId;
-	console.log('B: ', req.body.postImage);
 	let image = req.file ? req.file.path : req.body.postImage;
 	const updateOps = {
 		title: req.body.title,
