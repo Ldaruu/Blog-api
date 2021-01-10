@@ -4,7 +4,7 @@
 
 - mongo DB (https://docs.mongodb.com/manual/)
 
-##In the project directory, run:
+## In the project directory, run:
 
 ```
 yarn install
@@ -14,6 +14,16 @@ Start the server
 
 ```
 yarn start
+```
+
+## .env file example:
+
+```
+PORT=3001
+DB_SERVER=mongodb://localhost:27017/blog
+ORIGIN=http://localhost:3000
+API_URL=http://localhost:3001
+SECRET_KEY=tOpSeCrEtSeCrEtKeY
 ```
 
 ## Main used packages:
