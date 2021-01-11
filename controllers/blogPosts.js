@@ -32,12 +32,15 @@ exports.blogPosts_get_all = (req, res, next) => {
 
 exports.blogPost_create = (req, res, next) => {
 	imagePath = req.file ? req.file.path : null;
-	const blogPost = new BlogPost({
-		_id: new mongoose.Types.ObjectId(),
-		title: req.body.title,
-		content: req.body.content,
-		postImage: imagePath,
-	});
+	let blogPost = null;
+	if (req.body.title && req.body.content) {
+		blogPost = new BlogPost({
+			_id: new mongoose.Types.ObjectId(),
+			title: req.body.title,
+			content: req.body.content,
+			postImage: imagePath,
+		});
+	}
 	blogPost
 		.save()
 		.then((result) => {
