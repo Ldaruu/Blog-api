@@ -18,6 +18,7 @@ mongoose.plugin(slug);
 		},
 		postImage: {
 			type: String,
+			required: false,
 		},
 		date: {
 			type: Date,

@@ -47,7 +47,7 @@ exports.blogPost_create = (req, res, next) => {
 			res.status(201).json({
 				message: 'Post was created!',
 				post: {
-					id: result._id,
+					_id: result._id,
 					slug: result.slug,
 					title: result.title,
 					content: result.content,
@@ -89,7 +89,7 @@ exports.blogPosts_update_post = (req, res, next) => {
 	const updateOps = {
 		title: req.body.title,
 		content: req.body.content,
-		postImage: image,
+		postImage: image === 'null' || image === 'undefined' ? null : image,
 	};
 	// for (const ops of req.body) {
 	// 	updateOps[ops.propName] = ops.value;
@@ -101,7 +101,7 @@ exports.blogPosts_update_post = (req, res, next) => {
 			res.status(200).json({
 				message: 'Post was updated!',
 				post: {
-					id: result._id,
+					_id: result._id,
 					slug: result.slug,
 					title: result.title,
 					content: result.content,
