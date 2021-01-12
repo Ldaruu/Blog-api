@@ -86,7 +86,8 @@ exports.blogPosts_get_post = (req, res, next) => {
 exports.blogPosts_update_post = (req, res, next) => {
 	const id = req.params.postId;
 	let image = req.file ? req.file.path : req.body.postImage;
-	const updateOps = {
+	let updateOps = {};
+	updateOps = {
 		title: req.body.title,
 		content: req.body.content,
 		postImage: image === 'null' || image === 'undefined' ? null : image,
@@ -94,7 +95,11 @@ exports.blogPosts_update_post = (req, res, next) => {
 	// for (const ops of req.body) {
 	// 	updateOps[ops.propName] = ops.value;
 	// }
-	BlogPost.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true })
+	BlogPost.findOneAndUpdate(
+		{ _id: id },
+		{ $set: updateOps },
+		{ new: true, runValidators: true }
+	)
 		.select('_id title content postImage slug')
 		.exec()
 		.then((result) => {
