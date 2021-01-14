@@ -9,7 +9,7 @@ router.get('/', BlogPostsController.blogPosts_get_all);
 
 router.post(
 	'/',
-	// withAuth,
+	withAuth,
 	fileUploads.imageUploads,
 	BlogPostsController.blogPost_create
 );
@@ -18,11 +18,11 @@ router.get('/:slug', BlogPostsController.blogPosts_get_post);
 
 router.patch(
 	'/:postId',
-	// withAuth,
+	withAuth,
 	fileUploads.imageUploads,
 	BlogPostsController.blogPosts_update_post
 );
 
-router.delete('/:postId', BlogPostsController.blogPosts_delete_post);
+router.delete('/:postId', withAuth, BlogPostsController.blogPosts_delete_post);
 
 module.exports = router;
