@@ -1,10 +1,13 @@
 const BlogPost = require('../models/blogPost');
 const mongoose = require('mongoose');
 
+const User = require('../models/user');
+
 exports.blogPosts_get_all = (req, res, next) => {
 	BlogPost.find()
 		.sort({ date: 'desc' })
 		.select('_id title content postImage slug')
+		.populate('user_account', '_id userName')
 		.exec()
 		.then((data) => {
 			const response = {
@@ -16,6 +19,7 @@ exports.blogPosts_get_all = (req, res, next) => {
 						title: d.title,
 						content: d.content,
 						postImage: d.postImage,
+						user: d.user_account,
 						request: {
 							type: 'GET',
 							url: process.env.API_URL + '/posts/' + d._id,
@@ -39,6 +43,7 @@ exports.blogPost_create = (req, res, next) => {
 			title: req.body.title,
 			content: req.body.content,
 			postImage: imagePath,
+			user_account: req.body.user_account,
 		});
 	}
 	blogPost
@@ -52,6 +57,7 @@ exports.blogPost_create = (req, res, next) => {
 					title: result.title,
 					content: result.content,
 					postImage: result.postImage,
+					user_id: result.user_id,
 					request: {
 						type: 'GET',
 						url: process.env.API_URL + '/posts/' + result.slug,
@@ -70,6 +76,7 @@ exports.blogPosts_get_post = (req, res, next) => {
 	const slug = req.params.slug;
 	BlogPost.find({ slug: slug })
 		.select('_id title content postImage slug')
+		.populate('user_account', '_id userName')
 		.exec()
 		.then((data) => {
 			if (data) {

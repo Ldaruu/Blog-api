@@ -29,6 +29,11 @@ mongoose.plugin(slug);
 			slug: 'title',
 			unique: true,
 		},
+		user_account: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'User',
+			required: true,
+		},
 	}));
 
 module.exports = mongoose.model('BlogPost', blogPostSchema);
