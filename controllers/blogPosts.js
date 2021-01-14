@@ -19,7 +19,7 @@ exports.blogPosts_get_all = (req, res, next) => {
 						title: d.title,
 						content: d.content,
 						postImage: d.postImage,
-						user: d.user_account,
+						user_account: d.user_account,
 						request: {
 							type: 'GET',
 							url: process.env.API_URL + '/posts/' + d._id,
@@ -128,10 +128,13 @@ exports.blogPosts_update_post = (req, res, next) => {
 
 exports.blogPosts_delete_post = (req, res, next) => {
 	const id = req.params.postId;
-	BlogPost.deleteOne({ _id: id })
+	BlogPost.findOneAndDelete({
+		_id: id,
+		user_account: { _id: req.userData.userId },
+	})
 		.exec()
 		.then((result) => {
-			res.status(200).json({ message: 'Post deleted!' });
+			res.status(200).json({ message: 'Post deleted!', result: result });
 		})
 		.catch((err) => {
 			res.status(500).json({ error: err });
