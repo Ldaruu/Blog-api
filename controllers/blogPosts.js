@@ -37,13 +37,13 @@ exports.blogPosts_get_all = (req, res, next) => {
 exports.blogPost_create = (req, res, next) => {
 	imagePath = req.file ? req.file.path : null;
 	let blogPost = null;
-	if (req.body.title && req.body.content) {
+	if (req.body.title && req.body.content && req.userData.userId) {
 		blogPost = new BlogPost({
 			_id: new mongoose.Types.ObjectId(),
 			title: req.body.title,
 			content: req.body.content,
 			postImage: imagePath,
-			user_account: req.body.user_account,
+			user_account: req.userData.userId,
 		});
 	}
 	blogPost
@@ -103,7 +103,7 @@ exports.blogPosts_update_post = (req, res, next) => {
 	// 	updateOps[ops.propName] = ops.value;
 	// }
 	BlogPost.findOneAndUpdate(
-		{ _id: id },
+		{ _id: id, user_account: { _id: req.userData.userId } },
 		{ $set: updateOps },
 		{ new: true, runValidators: true }
 	)
