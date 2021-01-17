@@ -51,27 +51,26 @@ exports.user_login = (req, res, next) => {
 				return res.status(401).json({ error: 'Not Authenticated' });
 			}
 			bcrypt.compare(req.body.password, user.password, (err, result) => {
-				if (err) {
+				if (err || !result) {
 					return res.status(401).json({ error: 'Not Authenticated' });
 				}
 				if (result) {
-					const token = jwt.sign(
-						{
-							userId: user._id,
-							email: user.email,
-							userName: user.userName,
-						},
-						process.env.SECRET_KEY,
-						{ expiresIn: '2h' }
-					);
-					return res.status(200).json({
-						message: 'Authenticated User',
-						token: token,
-						user: {
-							id: user._id,
-							userName: user.userName,
-						},
-					});
+					const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY);
+					return res
+						.status(200)
+						.cookie('auth_token', token, {
+							maxAge: 365 * 24 * 60 * 60 * 1000,
+							httpOnly: true,
+							signed: true,
+						})
+						.json({
+							message: 'Authenticated User',
+							auth_token: token,
+							user: {
+								id: user._id,
+								userName: user.userName,
+							},
+						});
 				}
 			});
 		})
@@ -79,6 +78,11 @@ exports.user_login = (req, res, next) => {
 			console.log(err);
 			res.status(500).json({ error: err });
 		});
+};
+
+exports.user_logout = (req, res, next) => {
+	res.clearCookie('auth_token');
+	res.status(200).json({ logged_out: true, message: 'Logged out' });
 };
 
 exports.user_delete = (req, res, next) => {

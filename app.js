@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const blogpostRouter = require('./routes/blogposts');
 const usersRouter = require('./routes/users');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 require('dotenv/config');
 
 try {
@@ -28,6 +29,7 @@ app.use(cors({ origin: process.env.ORIGIN }));
 app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser(process.env.SIGNATURE));
 
 //ROUTERS
 app.use('/posts', blogpostRouter);
