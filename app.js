@@ -25,7 +25,7 @@ try {
 	console.log('Could not connect to DB ERROR: ', error.message);
 }
 
-app.use(cors({ origin: process.env.ORIGIN }));
+app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
