@@ -64,12 +64,8 @@ exports.user_login = (req, res, next) => {
 							signed: true,
 						})
 						.json({
-							message: 'Authenticated User',
-							auth_token: token,
-							user: {
-								id: user._id,
-								userName: user.userName,
-							},
+							id: user._id,
+							userName: user.userName,
 						});
 				}
 			});

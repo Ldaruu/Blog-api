@@ -57,11 +57,7 @@ exports.blogPost_create = (req, res, next) => {
 					title: result.title,
 					content: result.content,
 					postImage: result.postImage,
-					user_id: result.user_id,
-					request: {
-						type: 'GET',
-						url: process.env.API_URL + '/posts/' + result.slug,
-					},
+					user_account: { _id: result.user_account },
 				},
 			});
 		})
