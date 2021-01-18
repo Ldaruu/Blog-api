@@ -71,9 +71,31 @@ exports.user_login = (req, res, next) => {
 			});
 		})
 		.catch((err) => {
-			console.log(err);
 			res.status(500).json({ error: err });
 		});
+};
+
+exports.auto_login = (req, res, next) => {
+	try {
+		const cookie = req.signedCookies.auth_token;
+		const decoded = jwt.verify(cookie, process.env.SECRET_KEY);
+		User.findById(decoded.userId)
+			.exec()
+			.then((user) => {
+				if (user.length < 1) {
+					return res.status(401).json({ error: 'Log in first!' });
+				} else {
+					return res
+						.status(200)
+						.json({ id: user._id, userName: user.userName });
+				}
+			})
+			.catch((err) => {
+				res.status(500).json({ error: err });
+			});
+	} catch (err) {
+		return res.status(401).json({ error: 'Not logged in!' });
+	}
 };
 
 exports.user_logout = (req, res, next) => {
