@@ -104,18 +104,10 @@ exports.blogPosts_update_post = (req, res, next) => {
 		{ new: true, runValidators: true }
 	)
 		.select('_id title content postImage slug')
+		.populate('user_account', '_id userName')
 		.exec()
-		.then((result) => {
-			res.status(200).json({
-				message: 'Post was updated!',
-				post: {
-					_id: result._id,
-					slug: result.slug,
-					title: result.title,
-					content: result.content,
-					postImage: result.postImage,
-				},
-			});
+		.then((data) => {
+			res.status(200).json(data);
 		})
 		.catch((err) => {
 			res.status(500).json(err);
