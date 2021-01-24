@@ -27,8 +27,8 @@ try {
 
 app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use('/uploads', express.static('uploads'));
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.SIGNATURE));
 
 //ROUTERS
