@@ -5,7 +5,7 @@ const fileUploads = require('../middleware/fileUploads');
 
 const UserController = require('../controllers/users');
 
-router.post('/signup', fileUploads.imageUploads, UserController.user_signUp);
+router.post('/signup', fileUploads.avatarUploads, UserController.user_signUp);
 
 router.post('/login', UserController.user_login);
 

@@ -2,7 +2,12 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		cb(null, './uploads/');
+		let path =
+			file.fieldname === 'postImage'
+				? './uploads/articleImages'
+				: './uploads/userAvatar';
+
+		cb(null, path);
 	},
 	filename: function (req, file, cb) {
 		cb(null, new Date().toISOString() + file.originalname);
@@ -26,3 +31,4 @@ const upload = multer({
 });
 
 exports.imageUploads = upload.single('postImage');
+exports.avatarUploads = upload.single('avatar');
