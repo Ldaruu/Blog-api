@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
 	_id: {
@@ -19,10 +19,14 @@ const userSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	avatar: {
+		type: String,
+		required: false,
+	},
 	date: {
 		type: Date,
 		default: Date.now,
 	},
-})
+});
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('User', userSchema);

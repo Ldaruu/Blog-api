@@ -16,11 +16,13 @@ exports.user_signUp = (req, res, next) => {
 					if (err) {
 						return res.status(500).json({ error: err });
 					} else {
+						let avatarPath = req.file ? req.file.path : null;
 						const user = new User({
 							_id: new mongoose.Types.ObjectId(),
 							email: req.body.email,
 							password: hash,
 							userName: req.body.userName,
+							avatar: avatarPath,
 						});
 						user
 							.save()
@@ -65,6 +67,7 @@ exports.user_login = (req, res, next) => {
 						.json({
 							id: user._id,
 							userName: user.userName,
+							avatar: user.avatar,
 						});
 				}
 			});
@@ -86,7 +89,11 @@ exports.auto_login = (req, res, next) => {
 				} else {
 					return res
 						.status(200)
-						.json({ id: user._id, userName: user.userName });
+						.json({
+							id: user._id,
+							userName: user.userName,
+							avatar: user.avatar,
+						});
 				}
 			})
 			.catch((err) => {
